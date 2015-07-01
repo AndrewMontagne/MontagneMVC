@@ -47,12 +47,11 @@ class Model extends Integer
     {
         if(is_a($value, '\\Core\\Model\\Base', true))
         {
-            var_dump($value->getPrimaryKey());
             return parent::cast($value->getPrimaryKey());
         }
         else
         {
-            parent::cast($value);
+            return parent::cast($value);
         }
     }
 }

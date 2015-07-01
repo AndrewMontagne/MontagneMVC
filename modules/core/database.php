@@ -53,7 +53,7 @@ class Database
         if(!$success)
         {
             $error = $statement->errorInfo();
-            throw new Exception('Database Error: ' . json_encode($error));
+            throw new \Exception('Database Error: ' . json_encode($error) . ' Query:' . $query);
         }
         
         return $statement->fetchAll(PDO::FETCH_ASSOC);
@@ -70,7 +70,7 @@ class Database
         if(!$success)
         {
             $error = $statement->errorInfo();
-            throw new Exception('Database Error: ' . $error[0]);
+            throw new \Exception('Database Error: ' . $error[0] . ' Query:' . $query);
         }
         
         return $this->pdo->lastInsertId();

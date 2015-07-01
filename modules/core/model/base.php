@@ -160,7 +160,7 @@ class Base
         return static::getWhere('WHERE `' . $foreignKey . '` = :value', ['value'=>$value]);
     }
     
-    static public function getWhere($sql, $values)
+    static public function getWhere($sql = '', $values = [])
     {
         $database = \Core\Database::get(static::getModelDatabase());
         $data = $database->query('SELECT * FROM `' . static::getModelTable() . '` ' . $sql, $values);
@@ -196,14 +196,21 @@ class Base
         return $this->__get(static::getModelPrimaryKey());
     }
     
-    public function toJSON($pretty = false)
+    public function toStdClass()
     {
-        $json = [];
+        $array = [];
         
         foreach($this->_fields as $field)
         {
-            $json[$field->getColumnName()] = $field->getValue();
+            $array[$field->getColumnName()] = $field->getValue();
         }
+        
+        return (object)$array;
+    }
+    
+    public function toJSON($pretty = false)
+    {
+        $json = $this->toStdClass();
         
         if($pretty)
         {
