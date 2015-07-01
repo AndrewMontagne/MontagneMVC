@@ -1,0 +1,4 @@
+RewriteEngine on
+RewriteCond %{REQUEST_URI} !^/static/*(/|$)
+RewriteCond %{REQUEST_URI} !^/favicon\.ico$ 
+RewriteRule ^(.*)$ index.php [L]

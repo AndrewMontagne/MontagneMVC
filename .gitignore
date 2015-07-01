@@ -1,0 +1,7 @@
+nbproject/*
+.DS_Store
+Thumbs.db
+/config.ini
+/modules/*
+!/modules/core/
+/autoload.json
