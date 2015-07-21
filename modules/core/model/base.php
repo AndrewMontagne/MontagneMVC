@@ -4,7 +4,7 @@
  */
 
 namespace Core\Model;
-use Exception;
+use Core\Exception\ModelException;
 
 class Base
 {
@@ -41,7 +41,7 @@ class Base
         }
         else
         {
-            throw new Exception($fieldType . ' is an incorrect field type');
+            throw new ModelException($fieldType . ' is an incorrect field type');
         }
     }
 
@@ -57,7 +57,7 @@ class Base
     {
         if(is_null(static::getModelTable()))
         {
-            throw new Exception(get_called_class() . ' does not have a database table set.');
+            throw new ModelException(get_called_class() . ' does not have a database table set.');
         }
 
         $database = \Core\Database::get(static::getModelDatabase());
@@ -66,7 +66,7 @@ class Base
 
         if(count($data) < 1)
         {
-            throw new Exception('No ' . get_class($this) . ' found for id ' . $modelId);
+            throw new ModelException('No ' . get_class($this) . ' found for id ' . $modelId);
         }
 
         $datum = $data[0];
@@ -85,7 +85,7 @@ class Base
             }
             else if($field->isRequired())
             {
-                throw new Exception($name . ' is a required field!');
+                throw new ModelException($name . ' is a required field!');
             }
         }
         $this->_exists = true;
@@ -105,7 +105,7 @@ class Base
         }
         else
         {
-            throw new Exception('Cannot assign ' . $value . ' to ' . get_called_class() . 
+            throw new ModelException('Cannot assign ' . $value . ' to ' . get_called_class() . 
             '->' . $property . ', model is immutable.');
         }
     }
@@ -114,7 +114,7 @@ class Base
     {
         if(!static::isMutable())
         {
-            throw new Exception('Cannot save ' . get_called_class() . 
+            throw new ModelException('Cannot save ' . get_called_class() . 
             ', model is immutable.');
         }
         
@@ -169,7 +169,7 @@ class Base
         
         if(!is_array($data))
         {
-            throw new Exception(get_called_class());
+            throw new ModelException('Array not returned in Model::getWhere');
         }
         
         $result = [];
