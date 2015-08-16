@@ -68,7 +68,7 @@ else
     $CONFIG = $loaded_config[$host];
 }
 
-function __autoload($class_name)
+function autoload_lazy($class_name)
 {
     global $autoload_cache;
     global $CONFIG;
@@ -88,7 +88,6 @@ function __autoload($class_name)
     if (array_key_exists($class_name, $autoload_cache))
     {
         require_once($autoload_cache[$class_name]);
-        return;
     }
 
     $class_path_components = explode('\\', $class_name);
@@ -107,6 +106,7 @@ function __autoload($class_name)
         file_put_contents($CONFIG['autoload_cache'], json_encode($autoload_cache));
     }
 }
+spl_autoload_register('autoload_lazy');
 
 if(isset($CONFIG['ini']) && is_array($CONFIG['ini']))
 {
