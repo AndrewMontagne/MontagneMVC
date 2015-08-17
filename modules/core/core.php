@@ -108,6 +108,27 @@ function autoload_lazy($class_name)
 }
 spl_autoload_register('autoload_lazy');
 
+/**
+ * Autogenerates missing Exception\* classes to make try-catch easier.
+ * 
+ * @param type $class_name
+ */
+function autoload_autogen_exception($class_name)
+{
+    $chunked = explode('\\', $class_name);
+    if(array_shift($chunked) == 'Exception') //Needs to be in the Exception namespace.
+    {
+        // Yes, an eval follows. One is aware of the risks of using an eval, but $class_name is not user-defined.
+        // If somehow user input gets to $class_name, we have bigger problems than an eval.
+        // 
+        // The following code generates a dumb subclass of \\Exception in the Exception namespace so that it can be
+        // thrown, and then caught in a saner, more logical manner without having to have stupid amounts of source 
+        // files dedicated to just exceptions.
+        eval('namespace Exception { class ' . implode('\\', $chunked) . ' extends \\Exception { } }');
+    }
+}
+spl_autoload_register('autoload_autogen_exception');
+
 if(isset($CONFIG['ini']) && is_array($CONFIG['ini']))
 {
     foreach ($CONFIG['ini'] as $key => $value)
