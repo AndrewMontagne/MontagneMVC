@@ -3,6 +3,10 @@
  * Copyright (c) 2015 Joshua "Andrew" O'Rourke
  */
 
+// Enable output buffering during init
+ob_start();
+ini_set('display_errors', true);
+
 require_once 'modules/core/core.php';
 
 $path = explode('/', substr(filter_input(INPUT_SERVER, 'REQUEST_URI'), 1));
@@ -82,5 +86,8 @@ catch (Exception $e)
     
     trigger_error($e->getMessage());
 }
+
+// If we have gotten this far, everything is cool and we can clean the buffer
+ob_clean();
 
 $controller->render();

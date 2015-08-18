@@ -68,7 +68,7 @@ else
     $CONFIG = $loaded_config[$host];
 }
 
-function autoload_lazy($class_name)
+function autoload_static($class_name)
 {
     global $autoload_cache;
     global $CONFIG;
@@ -89,24 +89,8 @@ function autoload_lazy($class_name)
     {
         require_once($autoload_cache[$class_name]);
     }
-
-    $class_path_components = explode('\\', $class_name);
-
-    for ($i = 0; $i < count($class_path_components); $i++)
-    {
-        $class_path_components[$i] = strtolower(preg_replace('/(?<=\\w)(?=[A-Z])/', "_$1", $class_path_components[$i]));
-    }
-
-    $class_path = './modules/' . implode('/', $class_path_components) . '.php';
-
-    if (file_exists($class_path))
-    {
-        require_once($class_path);
-        $autoload_cache[$class_name] = $class_path;
-        file_put_contents($CONFIG['autoload_cache'], json_encode($autoload_cache));
-    }
 }
-spl_autoload_register('autoload_lazy');
+spl_autoload_register('autoload_static');
 
 /**
  * Autogenerates missing Exception\* classes to make try-catch easier.
