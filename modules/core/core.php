@@ -100,6 +100,10 @@ spl_autoload_register('autoload_static');
 function autoload_autogen_exception($class_name)
 {
     $chunked = explode('\\', $class_name);
+    if(count($chunked) <= 1)
+    {
+        return;
+    }
     if(array_shift($chunked) == 'Exception') //Needs to be in the Exception namespace.
     {
         // Yes, an eval follows. One is aware of the risks of using an eval, but $class_name is not user-defined.
