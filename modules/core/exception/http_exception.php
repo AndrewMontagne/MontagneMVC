@@ -25,7 +25,7 @@ class HttpException extends Exception
             switch($responseCode)
             {
                 case 500:
-                    $message = $innerException->getMessage();
+                    $message = get_class($innerException) . ': ' . $innerException->getMessage();
                     break;
                 case 404:
                     $message = 'Could not find page';

@@ -240,18 +240,24 @@ function error_handler ($errno , $errstr, $errfile, $errline, $errcontext)
         }
         break;
     }
-    
-    $error = new Core\Model\Error();
-    $error->hash = sha1($errno.$errstr.$errfile.$errline);
-    $error->timestamp = (new DateTime())->format('Y-m-d h:i:s');
-    $error->type = $type;
-    $error->level = $level;
-    $error->message = $errstr;
-    $error->line = $errline;
-    $error->file = $errfile;
-    $error->variables = @var_export($errcontext, true);
-    $error->stack = @var_export(debug_backtrace(), true);
-    $error->save();
+    try
+    {
+        $error = new Core\Model\Error();
+        $error->hash = sha1($errno.$errstr.$errfile.$errline);
+        $error->timestamp = (new DateTime())->format('Y-m-d h:i:s');
+        $error->type = $type;
+        $error->level = $level;
+        $error->message = $errstr;
+        $error->line = $errline;
+        $error->file = $errfile;
+        $error->variables = @var_export($errcontext, true);
+        $error->stack = @var_export(debug_backtrace(), true);
+        $error->save();
+    }
+    catch(PDOException $e)
+    {
+        // Exception logging the error. Nothing we can do, so just continue on.
+    }
     
     if(!$recoverable)
     {
