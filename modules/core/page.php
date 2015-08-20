@@ -17,7 +17,7 @@ class Page
 
     public function defaultAction($parameter)
     {
-        throw new \Core\Exception\Http(404);
+        throw new \Core\Exception\HttpException(404);
     }
     
     public function getView()
@@ -33,5 +33,44 @@ class Page
     public function render()
     {
         //include($this->getView());
+    }
+    
+    static public function route(array $path, string $action)
+    {
+        if(count($path) > 0)
+        {
+            $nextPage = get_called_class() . '\\' . ucfirst($path[0]);
+            
+            if(class_exists($nextPage))
+            {
+                array_shift($path);
+                $nextPage::route($path, $action);
+            }
+            else
+            {
+                throw new \Core\Exception\HttpException(404, 'Could not find page ' . $path);
+            }
+        }
+        else
+        {
+            $thisClass = get_called_class();
+            $page = new $thisClass;
+            if(is_null($action) || strlen($action))
+            {
+                $page->indexAction();
+            }
+            else
+            {
+                if(method_exists($page, $action . 'Action'))
+                {
+                    $action .= 'Action';
+                    $page->$action();
+                }
+                else
+                {
+                    $page->defaultAction($action);
+                }
+            }
+        }
     }
 }

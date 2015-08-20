@@ -13,65 +13,14 @@ $path = explode('/', substr(filter_input(INPUT_SERVER, 'REQUEST_URI'), 1));
 
 $action = array_pop($path);
 
-$controller_class = 'Page\\';
-
-if (isset($CONFIG['page_prefix']))
-{
-    $controller_class = $CONFIG['page_prefix'] . '\\' . $controller_class;
-}
-
-$exists;
-do
-{
-    $exists = class_exists($controller_class . str_replace(' ', '\\', ucwords(implode(' ', $path))), true);
-    if(!$exists)
-    {
-        if(strlen($action) > 0)
-        {
-            $action = array_pop($path) . '/' . $action;
-        }
-        else
-        {
-            $action = array_pop($path);
-        }
-    }
-}
-while(!$exists && count($path) > 0);
-unset($exists);
-
-$action = explode('?', $action)[0];
-
-$controller_class .= str_replace(' ', '\\', ucwords(implode(' ', $path)));
-
-if (count($path) === 0)
-{
-   $controller_class .= 'Home';
-}
-if ($action == '')
-{
-    $action = 'index';
-}
-$action = ltrim($action, '/');
-
-$controller;
-
 try
 {
-    if (!class_exists($controller_class, true))
+    if(is_null($path[0]) || strlen($path[0]) <= 0)
     {
-        throw new Core\Exception\HttpException(404);
+        $path[0] = 'home';
     }
-    $controller = new $controller_class();
-    
-    if (is_callable(array($controller_class, $action . 'Action')))
-    {
-        $formatted = $action . 'Action';
-        $controller->$formatted($action);
-    }
-    else
-    {
-        $controller->defaultAction($action);
-    }
+    $default = $CONFIG['default_page'];
+    $default::route($path, $action);
 }
 catch (Exception $e)
 {
@@ -80,7 +29,7 @@ catch (Exception $e)
         $e = new Core\Exception\HttpException(500, null, $e);
     }
 
-    $error_page = $CONFIG['page_prefix'] . '\\Page\\Error';
+    $error_page = $CONFIG['error_page'];
     $controller = new $error_page();
     $controller->errorAction($e);
     
