@@ -35,27 +35,28 @@ class Page
         //include($this->getView());
     }
     
-    static public function route(array $path, string $action)
+    static public function route(array $path, string $action, \stdClass $data)
     {
+        $page = null;
+        
         if(count($path) > 0)
         {
             $nextPage = get_called_class() . '\\' . ucfirst($path[0]);
-            
             if(class_exists($nextPage))
             {
                 array_shift($path);
-                $nextPage::route($path, $action);
+                $page = $nextPage::route($path, $action, $data);
             }
             else
             {
-                throw new \Core\Exception\HttpException(404, 'Could not find page ' . $path);
+                throw new \Core\Exception\HttpException(404, 'Could not find page ' . $nextPage);
             }
         }
         else
         {
             $thisClass = get_called_class();
             $page = new $thisClass;
-            if(is_null($action) || strlen($action))
+            if(is_null($action) || strlen($action) <= 0)
             {
                 $page->indexAction();
             }
@@ -72,5 +73,7 @@ class Page
                 }
             }
         }
+        
+        return $page;
     }
 }

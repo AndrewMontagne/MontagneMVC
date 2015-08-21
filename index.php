@@ -20,7 +20,7 @@ try
         $path[0] = 'home';
     }
     $default = $CONFIG['default_page'];
-    $default::route($path, $action);
+    $controller = $default::route($path, $action, new stdClass());
 }
 catch (Exception $e)
 {
