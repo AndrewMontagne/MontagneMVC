@@ -4,6 +4,8 @@
  */
 
 // Enable output buffering during init
+header('X-Powered-By: MontagneMVC');
+
 ob_start();
 ini_set('display_errors', true);
 
