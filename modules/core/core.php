@@ -3,6 +3,15 @@
  * Copyright (c) 2015 Joshua "Andrew" O'Rourke
  */
 
+declare(ticks=1);
+function ticker()
+{
+    $bt = debug_backtrace();
+    $caller = array_shift($bt);
+    var_dump($bt);
+}
+register_tick_function('ticker');
+
 global $CONFIG;
 
 date_default_timezone_set('UTC');
@@ -127,6 +136,7 @@ if(isset($CONFIG['ini']) && is_array($CONFIG['ini']))
 
 function error_handler ($errno , $errstr, $errfile, $errline, $errcontext)
 {
+    die('ERROR: "' . $errstr . '" IN ' . $errfile . ' ln. ' . $errline);
     if(error_reporting() == 0)
     {
         return;
