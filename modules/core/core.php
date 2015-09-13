@@ -3,15 +3,6 @@
  * Copyright (c) 2015 Joshua "Andrew" O'Rourke
  */
 
-declare(ticks=1);
-function ticker()
-{
-    $bt = debug_backtrace();
-    $caller = array_shift($bt);
-    var_dump($bt);
-}
-register_tick_function('ticker');
-
 global $CONFIG;
 
 date_default_timezone_set('UTC');
@@ -103,7 +94,7 @@ spl_autoload_register('autoload_static');
 
 /**
  * Autogenerates missing Exception\* classes to make try-catch easier.
- * 
+ *
  * @param type $class_name
  */
 function autoload_autogen_exception($class_name)
@@ -117,9 +108,9 @@ function autoload_autogen_exception($class_name)
     {
         // Yes, an eval follows. One is aware of the risks of using an eval, but $class_name is not user-defined.
         // If somehow user input gets to $class_name, we have bigger problems than an eval.
-        // 
+        //
         // The following code generates a dumb subclass of \\Exception in the Exception namespace so that it can be
-        // thrown, and then caught in a saner, more logical manner without having to have stupid amounts of source 
+        // thrown, and then caught in a saner, more logical manner without having to have stupid amounts of source
         // files dedicated to just exceptions.
         eval('namespace Exception { class ' . implode('\\', $chunked) . ' extends \\Exception { } }');
     }
@@ -141,11 +132,11 @@ function error_handler ($errno , $errstr, $errfile, $errline, $errcontext)
     {
         return;
     }
-    
+
     $type = 'UNKNOWN'; //'UNKNOWN','NOTICE','WARNING','ERROR','EXCEPTION','PARSE','STRICT','RECOVERABLE_ERROR','DEPRECATED'
     $level = 'PHP'; //'USER','PHP','CORE','COMPILE'
     $recoverable = false;
-    
+
     switch($errno)
     {
         case E_COMPILE_ERROR:
@@ -272,7 +263,7 @@ function error_handler ($errno , $errstr, $errfile, $errline, $errcontext)
     {
         // Exception logging the error. Nothing we can do, so just continue on.
     }
-    
+
     if(!$recoverable)
     {
         exit();

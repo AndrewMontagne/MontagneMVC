@@ -17,7 +17,7 @@ $action = array_pop($path);
 
 try
 {
-    if(is_null($path[0]) || strlen($path[0]) <= 0)
+    if(count($path) <= 0 || is_null($path[0]) || strlen($path[0]) <= 0)
     {
         $path[0] = 'home';
     }
@@ -34,11 +34,10 @@ catch (Exception $e)
     $error_page = $CONFIG['error_page'];
     $controller = new $error_page();
     $controller->errorAction($e);
-    
     trigger_error($e->getMessage());
 }
 
 // If we have gotten this far, everything is cool and we can clean the buffer
-ob_clean();
+//ob_clean();
 
 $controller->render();

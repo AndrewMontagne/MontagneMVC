@@ -19,22 +19,22 @@ class Page
     {
         throw new \Core\Exception\HttpException(404);
     }
-    
+
     public function getView()
     {
         return './includes/views/' . $this->view . '.phtml';
     }
-    
+
     public function finalise()
     {
         //
     }
-    
+
     public function render()
     {
         //include($this->getView());
     }
-    
+
     static public function route(array $path, $action, \stdClass $data, $thisClass = null)
     {
         $page = null;
@@ -42,7 +42,7 @@ class Page
         {
             $thisClass = get_called_class();
         }
-        
+
         if(count($path) > 0)
         {
             $nextPage = $thisClass . '\\' . ucfirst($path[0]);
@@ -58,7 +58,9 @@ class Page
         }
         else
         {
-            $page = new $thisClass;
+            $page = new $thisClass();
+            $page->routingData = $data;
+
             if(is_null($action) || strlen($action) <= 0)
             {
                 $page->indexAction();
@@ -76,12 +78,12 @@ class Page
                 }
             }
         }
-        
+
         if(is_null($page))
         {
             throw new \Core\Exception\HttpException(404, 'Could not find page ' . $nextPage);
         }
-        
+
         return $page;
     }
 }
