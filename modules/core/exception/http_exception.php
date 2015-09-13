@@ -20,8 +20,6 @@ class HttpException extends Exception
 
         if (is_null($customMessage))
         {
-            $statusCodes = json_decode(file_get_contents('./includes/status-codes.json'));
-
             switch($responseCode)
             {
                 case 500:
